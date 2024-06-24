@@ -31,7 +31,13 @@ def get_text_chunks(text):
 
 
 def get_vector_store(text_chunks):
+    try:
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+except Exception as e:
+    # Log the specific exception for detailed debugging
+    print(f"Error initializing GoogleGenerativeAIEmbeddings: {str(e)}")
+    raise  # Re-raise the exception to halt execution and get a full traceback
+    
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
 
