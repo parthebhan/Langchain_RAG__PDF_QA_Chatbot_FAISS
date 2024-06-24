@@ -61,17 +61,25 @@ def get_conversational_chain():
 
 
 def user_input(user_question):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    try:
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        # Enable dangerous deserialization here
+        new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+        docs = new_db.similarity_search(user_question)
+    
+        chain = get_conversational_chain()
+    
+        response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+        print(response)
+        st.write("Reply: ", response["output_text"])
 
-    # Enable dangerous deserialization here
-    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-    docs = new_db.similarity_search(user_question)
+    except Exception as e:
+        # Log the specific exception for detailed debugging
+        print(f"Error initializing GoogleGenerativeAIEmbeddings: {str(e)}")
+        raise  # Re-raise the exception to halt execution and get a full traceback
+        
 
-    chain = get_conversational_chain()
-
-    response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
-    print(response)
-    st.write("Reply: ", response["output_text"])
+    
 
 
 def main():
