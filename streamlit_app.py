@@ -14,6 +14,8 @@ import google.generativeai as genai
 api_key = st.secrets["auth_token"]
 genai.configure(api_key=api_key)
 
+emb = "models/embedding-001"
+
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -32,7 +34,7 @@ def get_text_chunks(text):
 
 def get_vector_store(text_chunks):
     try:
-        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        embeddings = GoogleGenerativeAIEmbeddings(model=emb)
         vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
         vector_store.save_local("faiss_index")
     except Exception as e:
@@ -62,7 +64,7 @@ def get_conversational_chain():
 
 def user_input(user_question):
     try:
-        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        embeddings = GoogleGenerativeAIEmbeddings(model=emb)
         # Enable dangerous deserialization here
         new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
         docs = new_db.similarity_search(user_question)
