@@ -34,13 +34,13 @@ def get_text_chunks(text):
 
 def get_vector_store(text_chunks):
     try:
-        embeddings = GoogleGenerativeAIEmbeddings(model=emb,google_api_key=api_key)
+        embeddings = GoogleGenerativeAIEmbeddings(model=emb, google_api_key=api_key)
         vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
         vector_store.save_local("faiss_index")
+        return vector_store
     except Exception as e:
-        # Log the specific exception for detailed debugging
-        print(f"Error initializing GoogleGenerativeAIEmbeddings: {str(e)}")
-        raise  # Re-raise the exception to halt execution and get a full traceback
+        logger.error(f"Error creating vector store: {str(e)}")
+        raise
     
     
 
@@ -62,25 +62,19 @@ def get_conversational_chain():
     return chain
 
 
+        
 def user_input(user_question):
     try:
-        embeddings = GoogleGenerativeAIEmbeddings(model=emb,google_api_key=api_key)
-        # Enable dangerous deserialization here
+        embeddings = GoogleGenerativeAIEmbeddings(model=emb, google_api_key=api_key)
         new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
         docs = new_db.similarity_search(user_question)
-    
+
         chain = get_conversational_chain()
-    
         response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
-        print(response)
-        st.write("Reply: ", response["output_text"])
-
+        return response["output_text"]
     except Exception as e:
-        # Log the specific exception for detailed debugging
-        print(f"Error initializing GoogleGenerativeAIEmbeddings: {str(e)}")
-        raise  # Re-raise the exception to halt execution and get a full traceback
-        
-
+        logger.error(f"Error querying PDFs: {str(e)}")
+        return "An error occurred while processing your query."
     
 
 
