@@ -17,6 +17,8 @@ genai.configure(api_key=api_key)
 
 emb = "models/embedding-001"
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 def get_pdf_text(pdf_docs):
     text = ""
