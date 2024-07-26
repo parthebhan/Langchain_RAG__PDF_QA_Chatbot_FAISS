@@ -9,9 +9,11 @@ from langchain.prompts import PromptTemplate
 import google.generativeai as genai
 import os
 
+
 # Configure the API key
 api_key = st.secrets["auth_token"]
 genai.configure(api_key=api_key)
+
 if not api_key:
     raise ValueError("GOOGLE_API_KEY is not set in the environment variables.")
 
