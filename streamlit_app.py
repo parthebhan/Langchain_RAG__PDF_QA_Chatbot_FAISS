@@ -9,10 +9,11 @@ from langchain.prompts import PromptTemplate
 import google.generativeai as genai
 import os
 
-
 # Configure the API key
 api_key = st.secrets["auth_token"]
 genai.configure(api_key=api_key)
+if not api_key:
+    raise ValueError("GOOGLE_API_KEY is not set in the environment variables.")
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -28,7 +29,7 @@ def get_text_chunks(text):
     return chunks
 
 def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001",)
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
 
