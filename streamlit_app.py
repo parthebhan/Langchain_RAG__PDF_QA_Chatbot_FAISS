@@ -8,6 +8,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 import google.generativeai as genai
 import os
+import time
 
 
 # Configure the API key
@@ -30,10 +31,23 @@ def get_text_chunks(text):
     chunks = text_splitter.split_text(text)
     return chunks
 
+
 def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001",google_api_key=api_key)
-    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
-    vector_store.save_local("faiss_index")
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
+            vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
+            vector_store.save_local("faiss_index")
+            return
+        except Exception as e:
+            if attempt < max_retries - 1:
+                st.warning(f"Attempt {attempt + 1} failed, retrying...")
+                time.sleep(2)  # wait before retrying
+            else:
+                st.error(f"Error creating vector store: {str(e)}")
+                raise
+
 
 def get_conversational_chain():
     prompt_template = """
