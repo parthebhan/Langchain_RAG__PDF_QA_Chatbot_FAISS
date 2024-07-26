@@ -8,10 +8,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 import google.generativeai as genai
 import os
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
 
 # Configure the API key
 api_key = st.secrets["auth_token"]
