@@ -8,6 +8,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 import google.generativeai as genai
+from huggingface_hub import login
 import os
 import time
 
