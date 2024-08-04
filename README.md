@@ -2,6 +2,8 @@
 
 # **Stop Searching, Start Talking! Get Answers from PDFs Instantly with AI**
 
+[![Streamlit App](https://langchainragpdfreaderappfaiss-myfsbfmgvenjnyczran4ch.streamlit.app/)
+
 ## Purpose
 
 The code creates a Streamlit application (`app.py`) that allows users to upload PDF files, extract text, and ask questions about the content using AI techniques such as text embeddings, similarity search, and a conversational AI model.
