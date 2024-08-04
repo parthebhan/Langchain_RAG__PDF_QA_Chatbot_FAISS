@@ -67,9 +67,9 @@ def get_conversational_chain():
 
     Answer:
     """
-    model = ChatGroq(model="llama-3.1-70b-versatile", temperature=0)
+    llm = ChatGroq(model="llama-3.1-70b-versatile", temperature=0)
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
-    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
+    chain = load_qa_chain(llm, chain_type="stuff", prompt=prompt)
     return chain
 
 def user_input(user_question):
