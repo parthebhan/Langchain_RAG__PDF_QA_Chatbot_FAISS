@@ -2,7 +2,7 @@
 
 # **Stop Searching, Start Talking! Get Answers from PDFs Instantly with AI**
 
-[![Streamlit App](https://langchainragpdfreaderappfaiss-myfsbfmgvenjnyczran4ch.streamlit.app/)
+[![Streamlit App](https://langchainragpdfreaderappfaiss-myfsbfmgvenjnyczran4ch.streamlit.app/)]
 
 ## Purpose
 
