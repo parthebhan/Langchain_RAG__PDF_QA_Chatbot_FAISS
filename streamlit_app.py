@@ -6,6 +6,7 @@ from langchain.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
+from langchain_groq import ChatGroq
 import google.generativeai as genai
 import os
 import time
@@ -58,7 +59,7 @@ def get_conversational_chain():
 
     Answer:
     """
-    model = ChatGoogleGenerativeAI(model="gemini-1.5-pro-latest", temperature=0.3)
+    model = ChatGroq(model="llama-3.1-70b-versatile", temperature=0)
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
     return chain
