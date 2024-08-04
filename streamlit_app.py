@@ -11,13 +11,18 @@ import google.generativeai as genai
 import os
 import time
 
+from langchain.chains import ConversationalRetrievalChain
+from transformers import pipeline
+from huggingface_hub import login
+
+from langchain_groq import ChatGroq
 
 # Configure the API key
-api_key = st.secrets["auth_token"]
-genai.configure(api_key=api_key)
+#api_key = st.secrets["auth_token"]
+#genai.configure(api_key=api_key)
 
-if not api_key:
-    raise ValueError("GOOGLE_API_KEY is not set in the environment variables.")
+#if not api_key:
+    #raise ValueError("GOOGLE_API_KEY is not set in the environment variables.")
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -37,7 +42,8 @@ def get_vector_store(text_chunks):
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
+            embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2',
+                                       model_kwargs={'device': 'cpu'})
             vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
             vector_store.save_local("faiss_index")
             return
