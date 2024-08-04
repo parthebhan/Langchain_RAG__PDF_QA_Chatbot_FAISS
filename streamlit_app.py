@@ -11,6 +11,7 @@ import google.generativeai as genai
 import os
 import time
 
+from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.chains import ConversationalRetrievalChain
 from transformers import pipeline
 from huggingface_hub import login
