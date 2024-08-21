@@ -36,7 +36,7 @@ def get_pdf_text(pdf_docs):
             text += page.extract_text()
     return text
 
-def get_text_chunksr(text):
+def get_text_chunks(text):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=100)
     chunks = text_splitter.split_text(text)
     return chunks
@@ -85,7 +85,7 @@ def user_input(user_question):
 
 def main():
     st.set_page_config(page_title="Chat PDF", page_icon=":book:")
-    st.header("Stoooop Searching, Start Talking! Get Answers from PDFs Instantly with AI")
+    st.header("Stop Searching, Start Talking! Get Answers from PDFs Instantly with AI")
 
     user_question = st.text_input("Ask a Question from the PDF Files")
 
