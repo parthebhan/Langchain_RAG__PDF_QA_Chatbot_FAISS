@@ -1,4 +1,4 @@
-# **Langchain_PDF_Reader**
+# **Langchain_PDF_QA_Chatbot**
 
 # **Stop Searching, Start Talking! Get Answers from PDFs Instantly with AI**
 
