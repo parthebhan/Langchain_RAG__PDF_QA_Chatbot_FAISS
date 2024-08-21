@@ -73,7 +73,7 @@ def user_input(user_question):
 
 def main():
     st.set_page_config("Chat PDF")
-    st.header("Stop Searching, Start Talking! Get Answers from PDFs Instantly with AI")
+    st.header("Stoooop Searching, Start Talking! Get Answers from PDFs Instantly with AI")
 
     user_question = st.text_input("Ask a Question from the PDF Files")
 
