@@ -95,9 +95,7 @@ def main():
 
     with st.sidebar:
         st.title("Menu:")
-         # Add the credit section
-        st.sidebar.markdown("<hr>", unsafe_allow_html=True)  # Adds a horizontal line with HTML
-        st.sidebar.markdown("<h3 style='color: #2ca02c;font-size: 20px;'>App Created by: Parthebhan Pari</h3>", unsafe_allow_html=True)
+        
         pdf_docs = st.file_uploader("Upload your PDF Files", accept_multiple_files=True)
         if st.button("Submit & Process"):
             if not pdf_docs:
@@ -109,6 +107,10 @@ def main():
                 text_chunks = get_text_chunks(raw_text)
                 get_vector_store(text_chunks)
                 st.success("PDFs processed and vector store created successfully.")
+
+        # Add the credit section
+        st.sidebar.markdown("<hr>", unsafe_allow_html=True)  # Adds a horizontal line with HTML
+        st.sidebar.markdown("<h3 style='color: #2ca02c;font-size: 20px;'>App Created by: Parthebhan Pari</h3>", unsafe_allow_html=True)
     
     
 if __name__ == "__main__":
