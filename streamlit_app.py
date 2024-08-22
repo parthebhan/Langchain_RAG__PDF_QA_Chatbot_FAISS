@@ -86,10 +86,7 @@ def user_input(user_question):
 def main():
     st.set_page_config(page_title="Chat PDF", page_icon=":book:")
     st.header("Stop Searching, Start Talking! Get Answers from PDFs Instantly with AI")
-    # Add the credit section
-    st.sidebar.markdown("<hr>", unsafe_allow_html=True)  # Adds a horizontal line with HTML
-    st.sidebar.markdown("<h3 style='color: #2ca02c;font-size: 20px;'>App Created by: Parthebhan Pari</h3>", unsafe_allow_html=True)
-
+   
     user_question = st.text_input("Ask a Question from the PDF Files")
 
     if user_question:
