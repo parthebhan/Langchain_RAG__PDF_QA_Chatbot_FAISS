@@ -8,3 +8,4 @@ langchain_community
 langchain-groq
 transformers
 sentence-transformers
+python-docx
