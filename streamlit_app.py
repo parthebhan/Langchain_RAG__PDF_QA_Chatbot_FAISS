@@ -21,7 +21,10 @@ from huggingface_hub import login
 
 from langchain_groq import ChatGroq
 
-#groq_api_key = os.getenv("groq_api_key")
+from dotenv import load_dotenv
+
+load_dotenv()
+# groq_api_key = os.getenv("groq_api_key")
 
 groq_api_key = st.secrets["groq_api_key"]
 
