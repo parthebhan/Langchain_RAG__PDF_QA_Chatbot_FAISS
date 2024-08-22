@@ -2,15 +2,17 @@ import streamlit as st
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain.vectorstores import FAISS 
+from langchain.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 import google.generativeai as genai
-from huggingface_hub import login
 import os
 import time
+import shutil
+from docx import Document
+from io import BytesIO
 
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.chains import ConversationalRetrievalChain
@@ -19,14 +21,9 @@ from huggingface_hub import login
 
 from langchain_groq import ChatGroq
 
-# Configure the API key
-#api_key = st.secrets["auth_token"]
-#genai.configure(api_key=api_key)
+#groq_api_key = os.getenv("groq_api_key")
+
 groq_api_key = st.secrets["groq_api_key"]
-
-
-#if not api_key:
-    #raise ValueError("GOOGLE_API_KEY is not set in the environment variables.")
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -41,13 +38,11 @@ def get_text_chunks(text):
     chunks = text_splitter.split_text(text)
     return chunks
 
-
 def get_vector_store(text_chunks):
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2',
-                                       model_kwargs={'device': 'cpu'})
+            embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2', model_kwargs={'device': 'cpu'})
             vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
             vector_store.save_local("faiss_index")
             return
@@ -58,7 +53,6 @@ def get_vector_store(text_chunks):
             else:
                 st.error(f"Error creating vector store: {str(e)}")
                 raise
-
 
 def get_conversational_chain():
     prompt_template = """
@@ -75,43 +69,134 @@ def get_conversational_chain():
     return chain
 
 def user_input(user_question):
-    embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2',
-                                       model_kwargs={'device': 'cpu'})
-    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-    docs = new_db.similarity_search(user_question)
-    chain = get_conversational_chain()
-    response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
-    return response["output_text"]
+    embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2', model_kwargs={'device': 'cpu'})
+    
+    vector_store_path = "faiss_index"
+    
+    if not os.path.exists(vector_store_path):
+        return "PDF file not found. Please upload and Click Submit & Process the PDF files again."
+
+    try:
+        new_db = FAISS.load_local(vector_store_path, embeddings, allow_dangerous_deserialization=True)
+        docs = new_db.similarity_search(user_question)
+        chain = get_conversational_chain()
+        response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+        return response["output_text"]
+    except Exception as e:
+        return f"An error occurred while processing the question: {str(e)}"
+
+def reset_app():
+    st.session_state.pdf_docs = None
+    st.session_state.raw_text = None
+    st.session_state.text_chunks = None
+    st.session_state.vector_store_created = False
+    st.session_state.user_question = None
+    st.session_state.response_text = None
+    st.session_state.chat_history = []  # Reset chat history
+
+    vector_store_dir = "faiss_index"
+    
+    if os.path.exists(vector_store_dir):
+        try:
+            shutil.rmtree(vector_store_dir)
+            st.success("Vector store directory deleted successfully!")
+        except PermissionError as e:
+            st.error(f"PermissionError: Unable to delete the directory. Ensure it is not in use or locked. Details: {str(e)}")
+        except Exception as e:
+            st.error(f"An error occurred while deleting the directory: {str(e)}")
+    
+    st.cache_data.clear()  # Clear any cached data
+    st.success("App has been reset successfully!")
+
+def save_chat_history_to_docx(chat_history):
+    doc = Document()
+    doc.add_heading('Chat History', level=1)
+    for question, answer in reversed(chat_history):
+        doc.add_heading('Question:', level=2)
+        doc.add_paragraph(question)
+        doc.add_heading('Answer:', level=2)
+        doc.add_paragraph(answer)
+        doc.add_paragraph("-----------------------")
+    
+    docx_output = BytesIO()
+    doc.save(docx_output)
+    docx_output.seek(0)
+    
+    return docx_output
 
 def main():
+    if 'pdf_docs' not in st.session_state:
+        st.session_state.pdf_docs = None
+    if 'raw_text' not in st.session_state:
+        st.session_state.raw_text = None
+    if 'text_chunks' not in st.session_state:
+        st.session_state.text_chunks = None
+    if 'vector_store_created' not in st.session_state:
+        st.session_state.vector_store_created = False
+    if 'user_question' not in st.session_state:
+        st.session_state.user_question = None
+    if 'response_text' not in st.session_state:
+        st.session_state.response_text = None
+    if 'chat_history' not in st.session_state:
+        st.session_state.chat_history = []
+
     st.set_page_config(page_title="Chat PDF", page_icon=":book:")
     st.header("Stop Searching, Start Talking! Get Answers from PDFs Instantly with AI")
-   
-    user_question = st.text_input("Ask a Question from the PDF Files")
 
+    user_question = st.text_input("Ask a Question from the PDF Files")
+    
     if user_question:
         response_text = user_input(user_question)
+        st.session_state.user_question = user_question
+        st.session_state.response_text = response_text
+        st.session_state.chat_history.append((user_question, response_text))
         st.write("Reply: ", response_text)
 
     with st.sidebar:
-        st.title("Menu:")
+        st.title("App Menu:")
         
-        pdf_docs = st.file_uploader("Upload your PDF Files", accept_multiple_files=True)
+        pdf_docs = st.file_uploader("Upload your PDF Files and Click Submit & process ", accept_multiple_files=True)
+        if pdf_docs:
+            st.session_state.pdf_docs = pdf_docs
+
         if st.button("Submit & Process"):
-            if not pdf_docs:
+            if not st.session_state.pdf_docs:
                 st.error("Please upload at least one PDF file.")
                 return
 
             with st.spinner("Processing..."):
-                raw_text = get_pdf_text(pdf_docs)
+                raw_text = get_pdf_text(st.session_state.pdf_docs)
+                st.session_state.raw_text = raw_text
                 text_chunks = get_text_chunks(raw_text)
+                st.session_state.text_chunks = text_chunks
                 get_vector_store(text_chunks)
-                st.success("PDFs processed and vector store created successfully.")
+                st.session_state.vector_store_created = True
+                st.success("PDFs processed and vector store created successfully. Start Querying!!!!")
 
+        st.sidebar.markdown("<h3 font-size: 20px;'>Manage Chat History</h3>", unsafe_allow_html=True)
+        if st.button("Reset App"):
+            reset_app()
+
+        if st.button("Save Chat History"):
+            docx_output = save_chat_history_to_docx(st.session_state.chat_history)
+            st.download_button(
+                label="Download Chat History",
+                data=docx_output,
+                file_name="chat_history.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
+        
         # Add the credit section
         st.sidebar.markdown("<hr>", unsafe_allow_html=True)  # Adds a horizontal line with HTML
         st.sidebar.markdown("<h3 style='color: #2ca02c;font-size: 20px;'>App Created by: Parthebhan Pari</h3>", unsafe_allow_html=True)
-    
-    
+
+    # Display chat history
+    st.subheader("Chat History")
+    for question, answer in reversed(st.session_state.chat_history):
+        st.markdown(f"<p style='color: red; font-size: 24px;'><strong>Question:</strong> {question}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p><strong>Answer:</strong> {answer}</p>", unsafe_allow_html=True)
+        st.write("-----------------------")
+
 if __name__ == "__main__":
     main()
+
