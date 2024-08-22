@@ -21,11 +21,6 @@ from huggingface_hub import login
 
 from langchain_groq import ChatGroq
 
-from dotenv import load_dotenv
-
-load_dotenv()
-# groq_api_key = os.getenv("groq_api_key")
-
 groq_api_key = st.secrets["groq_api_key"]
 
 def get_pdf_text(pdf_docs):
