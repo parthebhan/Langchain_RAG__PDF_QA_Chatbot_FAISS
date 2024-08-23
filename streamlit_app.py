@@ -147,7 +147,7 @@ def main():
         st.write("Reply: ", response_text)
 
     with st.sidebar:
-        st.title("App Menu:")
+        st.markdown("<h1 style='color: #ff69b4;'>App Menu:</h1>", unsafe_allow_html=True) 
         
         pdf_docs = st.file_uploader("Upload your PDF Files and Click Submit & process ", accept_multiple_files=True)
         if pdf_docs:
