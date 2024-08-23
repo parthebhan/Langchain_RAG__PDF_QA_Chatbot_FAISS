@@ -147,7 +147,7 @@ def main():
         st.write("Reply: ", response_text)
 
     with st.sidebar:
-        st.markdown("<h1 style='color: #ff69b4;'>App Menu:</h1>", unsafe_allow_html=True) 
+        st.markdown("<h1 style='color: pink;'>App Menu:</h1>", unsafe_allow_html=True) 
         
         pdf_docs = st.file_uploader("Upload your PDF Files and Click Submit & process ", accept_multiple_files=True)
         if pdf_docs:
@@ -167,7 +167,7 @@ def main():
                 st.session_state.vector_store_created = True
                 st.success("PDFs processed and vector store created successfully. Start Querying!!!!")
 
-        st.sidebar.markdown("<h3 font-size: 20px;'>Manage Chat History</h3>", unsafe_allow_html=True)
+        st.sidebar.markdown("<h3 style='color: pink; font-size: 20px;'>Manage Chat History</h3>", unsafe_allow_html=True)
         if st.button("Reset App"):
             reset_app()
 
