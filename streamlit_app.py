@@ -186,8 +186,8 @@ def main():
         st.write("  ")   
         # Notes section
         st.markdown("""
-        <h3 style='color: #2ca02c; font-size: 18px;'>Notes:</h3>
-        <ul>
+        <h3 style='color: #2ca02c; font-size: 12px;'>Notes:</h3>
+        <ul style='color: #2ca02c;'>
             <li><strong>Streamlit:</strong> Interactive web app framework.</li>
             <li><strong>LangChain:</strong> Manages text processing and search.</li>
             <li><strong>FAISS:</strong> Performs similarity search.</li>                 
