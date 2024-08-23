@@ -135,7 +135,7 @@ def main():
         st.session_state.chat_history = []
 
     st.set_page_config(page_title="Chat PDF", page_icon=":book:")
-    st.header("Stop Searching, Start Talking! Get Answers from PDFs Instantly with AI")
+    st.markdown("<h1 style='color: pink;'>Stop Searching, Start Talking! Get Answers from PDFs Instantly with AI</h1>", unsafe_allow_html=True)
 
     user_question = st.text_input("Ask a Question from the PDF Files")
     
@@ -199,7 +199,7 @@ def main():
     # Display chat history
     st.subheader("Chat History")
     for question, answer in reversed(st.session_state.chat_history):
-        st.markdown(f"<p style='color: red; font-size: 24px;'><strong>Question:</strong> {question}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='color: pink; font-size: 24px;'><strong>Question:</strong> {question}</p>", unsafe_allow_html=True)
         st.markdown(f"<p><strong>Answer:</strong> {answer}</p>", unsafe_allow_html=True)
         st.write("-----------------------")
 
