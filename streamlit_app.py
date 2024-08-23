@@ -186,19 +186,26 @@ def main():
         st.write("  ")   
         # Notes section
         st.markdown("""
-        ### Notes:
-    
-        - **Streamlit**: Interactive web app framework.
-        - **PyPDF2**: Extracts text from PDFs.
-        - **LangChain**: Manages text processing and search.
-          - **RecursiveCharacterTextSplitter**: Splits text into chunks.
-          - **HuggingFaceEmbeddings**: Converts text to embeddings.
-          - **FAISS**: Performs similarity search.
-          - **load_qa_chain**: Sets up QA chains with language models.
-        - **ChatGroq**: Provides large language models via API.
-          - **Model**: `llama-3.1-70b-versatile`
-        - **HuggingFace Transformers**: Accesses pre-trained models.
-        """)
+        <h3 style='color: #2ca02c; font-size: 18px;'>Notes:</h3>
+        <ul>
+            <li><strong>Streamlit:</strong> Interactive web app framework.</li>
+            <li><strong>PyPDF2:</strong> Extracts text from PDFs.</li>
+            <li><strong>LangChain:</strong> Manages text processing and search.
+                <ul>
+                    <li><strong>RecursiveCharacterTextSplitter:</strong> Splits text into chunks.</li>
+                    <li><strong>HuggingFaceEmbeddings:</strong> Converts text to embeddings.</li>
+                    <li><strong>FAISS:</strong> Performs similarity search.</li>
+                    <li><strong>load_qa_chain:</strong> Sets up QA chains with language models.</li>
+                </ul>
+            </li>
+            <li><strong>ChatGroq:</strong> Provides large language models via API.
+                <ul>
+                    <li><strong>Model:</strong> llama-3.1-70b-versatile</li>
+                </ul>
+            </li>
+            <li><strong>HuggingFace Transformers:</strong> Accesses pre-trained models.</li>
+        </ul>
+        """, unsafe_allow_html=True)
 
     # Display chat history
     st.subheader("Chat History")
