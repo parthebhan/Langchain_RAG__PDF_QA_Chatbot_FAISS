@@ -171,7 +171,7 @@ def main():
         if st.button("Reset App"):
             reset_app()
 
-        if st.button("Save Chat History"):
+        if st.button("Save Chat History and Exit"):
             docx_output = save_chat_history_to_docx(st.session_state.chat_history)
             st.download_button(
                 label="Download Chat History",
@@ -179,6 +179,7 @@ def main():
                 file_name="chat_history.docx",
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
+            reset_app()
         
         # Add the credit section
         st.sidebar.markdown("<hr>", unsafe_allow_html=True)  # Adds a horizontal line with HTML
