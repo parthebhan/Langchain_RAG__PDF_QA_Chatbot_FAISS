@@ -187,7 +187,7 @@ def main():
         # Notes section
         st.markdown("""
         <h3 style='color: pink; font-size: 18px;'>Dependencies:</h3>
-        <ul style='color: pink;font-size: 15px'>
+        <ul style='color: pink;font-size: 12px'>
             <li><strong>Streamlit:</strong> Interactive web app framework.</li>
             <li><strong>LangChain:</strong> Manages text processing and search.</li>
             <li><strong>FAISS:</strong> Performs similarity search.</li>                 
