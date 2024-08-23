@@ -197,7 +197,7 @@ def main():
         """, unsafe_allow_html=True)
 
     # Display chat history
-    st.markdown("<h2 style='color: #ff69b4;'>Chat History</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: pink;'>Chat History</h2>", unsafe_allow_html=True)
     for question, answer in reversed(st.session_state.chat_history):
         st.markdown(f"<p style='color: pink; font-size: 24px;'><strong>Question:</strong> {question}</p>", unsafe_allow_html=True)
         st.markdown(f"<p><strong>Answer:</strong> {answer}</p>", unsafe_allow_html=True)
