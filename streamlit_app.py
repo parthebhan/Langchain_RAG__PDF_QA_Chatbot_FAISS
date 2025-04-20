@@ -193,7 +193,7 @@ def main():
             <li><strong>LangChain:</strong> Manages text processing and search.</li>
             <li><strong>FAISS:</strong> Performs similarity search.</li>                 
             <li><strong>ChatGroq:</strong> Provides large language models via API.</li>
-            <li><strong>Model:</strong> llama-3.1-70b-versatile</li>
+            <li><strong>Model:</strong> llama-3.3-70b-versatile</li>
         </ul>
         """, unsafe_allow_html=True)
 
